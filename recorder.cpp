@@ -1,4 +1,6 @@
 #include "recorder.h"
+#include "define.h"
+#include "codec.h"
 
 #include <QDebug>
 #include <QMediaDevices>
@@ -6,58 +8,52 @@
 Recorder::Recorder(QObject *parent)
     : QObject{parent}
 {
-    if (testMode) {
+    // 录制文件
+    file.setFileName("fpga_record.wav");
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
-    } else {
-        QAudioFormat format;
-        format.setSampleRate(8000);
-        format.setChannelCount(1);
-        format.setSampleFormat(QAudioFormat::UInt8);
+    // 音频流格式设定
+    QAudioFormat format;
+    format.setSampleRate(SAMPLE_RATE);
+    format.setChannelCount(1);
+    format.setSampleFormat(SAMPLE_FORMAT);
 
-        QAudioDevice info = QMediaDevices::defaultAudioInput();
-        if (!info.isFormatSupported(format)) {
-            qWarning() << "Default format not supported, trying to use the nearest.";
-        }
-
-        input = new QAudioSource(format, this);
-        connect(input, &QAudioSource::stateChanged, this, &Recorder::handleStateChanged);
+    // 检查输入设备支持
+    QAudioDevice info = QMediaDevices::defaultAudioInput();
+    if (!info.isFormatSupported(format)) {
+        qWarning() << "Default format not supported, trying to use the nearest.";
     }
+
+    // 获取输入设备并跟踪
+    input = new QAudioSource(format, this);
+    connect(input, &QAudioSource::stateChanged, this, &Recorder::handleStateChanged);
 }
 
+// 开始录制
 void Recorder::start()
 {
     qDebug() << "recorder start" << Qt::endl;
-    if (testMode) {
-
-    } else {
-
-
-        char buf[1024];
-        input->start(file);
-        file->setFileName("test.mp3");
-        file->open(QIODevice::WriteOnly | QIODevice::Truncate);
+    if (tempFile.open()) {
+        qDebug() << "record file to " << tempFile.fileName() << Qt::endl;
+        input->start(&tempFile);
     }
 }
 
+// 暂停录制
 void Recorder::pause()
 {
     qDebug() << "recorder pause" << Qt::endl;
-    if (testMode) {
-
-    } else {
-        input->stop();
-    }
+    input->stop();
 }
 
+// 结束录制
 void Recorder::end()
 {
     qDebug() << "recorder end" << Qt::endl;
-    if (testMode) {
-
-    } else {
-        input->stop();
-        file->close();
-    }
+    input->stop();
+    tempFile.close();
+    qDebug() << "save file to " << file.fileName() << Qt::endl;
+    Codec::pcm2wav(tempFile.fileName(), file.fileName());
 }
 
 void Recorder::handleStateChanged(QAudio::State newState)

@@ -21,12 +21,11 @@ Player::Player(QObject *parent)
     connect(output, &QAudioSink::stateChanged, this, &Player::handleStateChanged);
 }
 
-void Player::play()
+void Player::play(QString fileName)
 {
     qDebug() << "player start" << Qt::endl;
-    file.setFileName("test.mp3");
+    file.setFileName(fileName);
     file.open(QIODevice::ReadOnly);
-
     outputDevice = output->start();
 }
 

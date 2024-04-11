@@ -2,6 +2,7 @@
 #define RECORDER_H
 
 #include <QObject>
+#include <QTemporaryFile>
 #include <QFile>
 #include <QAudioSource>
 
@@ -25,7 +26,8 @@ public:
 private:
     void handleStateChanged(QAudio::State newState);
 
-    QFile *file;
+    QTemporaryFile tempFile;
+    QFile file;
     QAudioSource *input;
     QIODevice *inputDevice;
 

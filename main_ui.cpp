@@ -133,6 +133,6 @@ auto MainUI::on_endButton_clicked() -> void
 
 auto MainUI::on_playButton_clicked() -> void
 {
-    player.play();
+    // player.play();
 }
 

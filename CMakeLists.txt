@@ -9,7 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS
     Widgets
     Network
     Multimedia
@@ -28,12 +28,15 @@ set(PROJECT_SOURCES
         main_ui.cpp
         main_ui.h
         main_ui.ui
+        define.h
         udplisten.h
         udplisten.cpp
         recorder.h
         recorder.cpp
         player.h
         player.cpp
+        codec.h
+        codec.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

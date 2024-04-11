@@ -11,7 +11,7 @@ class Player : public QObject
 public:
     explicit Player(QObject *parent = nullptr);
 
-    void play();
+    void play(QString fileName);
     void pause();
     void stop();
 
