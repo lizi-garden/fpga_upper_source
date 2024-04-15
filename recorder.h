@@ -12,7 +12,7 @@ class Recorder : public QObject
 public:
     explicit Recorder(QObject *parent = nullptr);
 
-    void start();
+    void start(QFile *tempFile);
     void pause();
     void end();
 
@@ -21,13 +21,11 @@ public:
         qint64 lens;
     };
 
-    bool testMode = false;
-
 private:
     void handleStateChanged(QAudio::State newState);
 
-    QTemporaryFile tempFile;
-    QFile file;
+    QFile *file;
+    QFile saveFile;
     QAudioSource *input;
     QIODevice *inputDevice;
 

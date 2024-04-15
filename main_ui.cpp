@@ -14,10 +14,10 @@ MainUI::MainUI(QWidget *parent)
     // 设备按钮
     auto *deviceMenu = new QMenu();
     auto *deviceAction1 = new QAction("未检测到设备");
-    connect(deviceAction1, &QAction::triggered, this, [deviceAction1, this]{on_deviceMenuUpdate("未检测到设备"); recorder.testMode = false;});
+    connect(deviceAction1, &QAction::triggered, this, [deviceAction1, this]{on_deviceMenuUpdate("未检测到设备");});
     deviceMenu->addAction(deviceAction1);
     auto *deviceAction2 = new QAction("测试上位机");
-    connect(deviceAction2, &QAction::triggered, this, [deviceAction2, this]{on_deviceMenuUpdate("测试上位机"); recorder.testMode = true;});
+    connect(deviceAction2, &QAction::triggered, this, [deviceAction2, this]{on_deviceMenuUpdate("测试上位机");});
     deviceMenu->addAction(deviceAction2);
     ui->deviceButton->setMenu(deviceMenu);
 

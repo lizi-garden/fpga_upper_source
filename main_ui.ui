@@ -143,6 +143,9 @@
            <property name="text">
             <string>播放</string>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>

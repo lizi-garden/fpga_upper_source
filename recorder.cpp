@@ -9,13 +9,13 @@ Recorder::Recorder(QObject *parent)
     : QObject{parent}
 {
     // 录制文件
-    file.setFileName("fpga_record.wav");
-    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    saveFile.setFileName(RECORD_FILENAME);
+    saveFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
     // 音频流格式设定
     QAudioFormat format;
     format.setSampleRate(SAMPLE_RATE);
-    format.setChannelCount(1);
+    format.setChannelCount(CHANNEL_NUM);
     format.setSampleFormat(SAMPLE_FORMAT);
 
     // 检查输入设备支持
@@ -30,13 +30,16 @@ Recorder::Recorder(QObject *parent)
 }
 
 // 开始录制
-void Recorder::start()
+void Recorder::start(QFile *tempFile)
 {
-    qDebug() << "recorder start" << Qt::endl;
-    if (tempFile.open()) {
-        qDebug() << "record file to " << tempFile.fileName() << Qt::endl;
-        input->start(&tempFile);
+    if (tempFile == nullptr){
+        qDebug() << "open file is null" << Qt::endl;
+        return;
     }
+
+    qDebug() << "recorder start" << Qt::endl;
+    file = tempFile;
+    input->start(file);
 }
 
 // 暂停录制
@@ -51,9 +54,8 @@ void Recorder::end()
 {
     qDebug() << "recorder end" << Qt::endl;
     input->stop();
-    tempFile.close();
-    qDebug() << "save file to " << file.fileName() << Qt::endl;
-    Codec::pcm2wav(tempFile.fileName(), file.fileName());
+    qDebug() << "save file to " << saveFile.fileName() << Qt::endl;
+    Codec::pcm2wav(file->fileName(), saveFile.fileName());
 }
 
 void Recorder::handleStateChanged(QAudio::State newState)

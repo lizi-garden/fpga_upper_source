@@ -1,4 +1,5 @@
 #include "player.h"
+#include "define.h"
 
 #include <QDebug>
 #include <QMediaDevices>
@@ -7,9 +8,9 @@ Player::Player(QObject *parent)
     : QObject{parent}
 {
     QAudioFormat format;
-    format.setSampleRate(8000);
-    format.setChannelCount(1);
-    format.setSampleFormat(QAudioFormat::UInt8);
+    format.setSampleRate(SAMPLE_RATE);
+    format.setChannelCount(CHANNEL_NUM);
+    format.setSampleFormat(SAMPLE_FORMAT);
 
     QAudioDevice info = QMediaDevices::defaultAudioOutput();
     if (!info.isFormatSupported(format)) {
@@ -21,19 +22,24 @@ Player::Player(QObject *parent)
     connect(output, &QAudioSink::stateChanged, this, &Player::handleStateChanged);
 }
 
-void Player::play(QString fileName)
+void Player::play(QFile *tempFile)
 {
     qDebug() << "player start" << Qt::endl;
-    file.setFileName(fileName);
-    file.open(QIODevice::ReadOnly);
-    outputDevice = output->start();
+    if (file == nullptr) {
+        qDebug() << "open file failed" << Qt::endl;
+        return;
+    }
+
+    file = tempFile;
+    file->open(QIODevice::ReadOnly);
+    output->start(file);
 }
 
 void Player::stop()
 {
     qDebug() << "player stop" << Qt::endl;
     output->stop();
-    file.close();
+    file->close();
 }
 
 void Player::handleStateChanged(QAudio::State newState)

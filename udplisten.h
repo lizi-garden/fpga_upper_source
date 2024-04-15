@@ -26,7 +26,7 @@ private:
     QUdpSocket *udpsocket;
 
 private slots:
-    void readyReadSlot();
+    void readPendingDatagrams();
 
 };
 

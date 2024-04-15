@@ -11,14 +11,14 @@ class Player : public QObject
 public:
     explicit Player(QObject *parent = nullptr);
 
-    void play(QString fileName);
+    void play(QFile *tempFile);
     void pause();
     void stop();
 
 private:
     void handleStateChanged(QAudio::State newState);
 
-    QFile file;
+    QFile *file;
     QAudioSink *output;
     QIODevice *outputDevice;
 
